@@ -14,12 +14,5 @@ COPY requirements.txt /app/
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# # Copy the rest of your application's code
-# COPY ../src/ /app
-
-# # Copy the static dir
-# COPY static /app/static
-
-# # Define the command to run your application
-# # This should start the NiceGUI server
-# CMD ["python", "your_app_script.py"]
+# Copy the rest of your application's code
+COPY src/ /app

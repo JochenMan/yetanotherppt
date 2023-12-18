@@ -1,6 +1,6 @@
 {
     "name": "My Dev Container",
-    "dockerComposeFile": "docker-compose.yml",
+    "dockerComposeFile": "../docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/workspace",
     "customizations": {
