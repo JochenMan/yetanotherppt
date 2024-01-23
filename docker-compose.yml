@@ -5,5 +5,7 @@ services:
     build: .
     command: >
       python3 ./basic_example2.py
+    volumes:
+      - .:/workspace
     ports:
       - "9090:8080"

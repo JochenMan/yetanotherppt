@@ -21,6 +21,21 @@ ui.button('Convert', on_click=show_converted_html)
 def convert_to_html(text):
     # Implement the conversion logic here
     # For example, you might use a library or custom code to convert the text to HTML
-    return f"<html><body>this is the html version of {text}</body></html>"
+    # return f"<html><body>Html version of {text}</body></html>"
+    multiline = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slides Page</title>
+</head>
+<body>
+    <h1>Welcome to the Slides Page</h1>
+    <p>This is a simple static HTML page.</p>
+</body>
+</html>
+"""
+    return multiline
 
 ui.run()
