@@ -37,6 +37,9 @@ docker run --rm -v "$(pwd):/data" pandoc-converter -s -t revealjs -o /data/prese
 
 # Or to use a different theme
 docker run --rm -v "$(pwd):/data" pandoc-converter -s -t revealjs -o /data/presentation.html /data/presentation.rst -V revealjs-url=./reveal.js -V theme=solarized
+
+# Or to use a custom-style.css file for setting the background image:
+docker run --rm -v "$(pwd):/data" pandoc-converter -s -t revealjs -o /data/presentation.html /data/presentation.rst -V revealjs-url=./reveal.js -V theme=white --css custom-style.css
 ```
 
 This command takes presentation.rst from your current directory, converts it to presentation.html using the Reveal.js format, and outputs the file back to your current directory.
