@@ -34,6 +34,9 @@ Use the pandoc-converter Docker container to convert your .rst document into an 
 
 ```bash
 docker run --rm -v "$(pwd):/data" pandoc-converter -s -t revealjs -o /data/presentation.html /data/presentation.rst -V revealjs-url=./reveal.js
+
+# Or to use a different theme
+docker run --rm -v "$(pwd):/data" pandoc-converter -s -t revealjs -o /data/presentation.html /data/presentation.rst -V revealjs-url=./reveal.js -V theme=solarized
 ```
 
 This command takes presentation.rst from your current directory, converts it to presentation.html using the Reveal.js format, and outputs the file back to your current directory.
