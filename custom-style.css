@@ -18,6 +18,28 @@
     z-index: 1;
 }
 
+/* Add a semi-transparent box to the title slide */
+#title-slide {
+    position: relative;
+}
+
+#title-slide:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Adjust color and opacity as needed */
+    z-index: 0; /* Ensure it's behind the content */
+}
+
+/* Ensure title slide content is positioned above the semi-transparent box */
+#title-slide > * {
+    position: relative;
+    z-index: 1;
+}
+
 /* Additional custom styles (if needed) */
 
 .reveal {
