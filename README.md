@@ -47,3 +47,7 @@ This command takes presentation.rst from your current directory, converts it to 
 ## Viewing the Presentation
 
 Open your preferred web browser and navigate to http://localhost:8080/presentation.html. You should now see your presentation rendered as an interactive slide show. Navigate through the slides using the arrow keys on your keyboard.
+
+## PDF version
+
+To obtain the pdf version of it, visit http://localhost:8080/presentation.html?print-pdf, then press `CTRL` + `p` and select "Save as PDF".
