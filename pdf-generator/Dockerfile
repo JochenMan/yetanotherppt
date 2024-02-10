@@ -33,4 +33,5 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-CMD [ "node", "generatePDFs.js" ]
+# CMD [ "node", "generatePDFs.js" ]
+CMD [ "node", "generatePDFfromScreenshots.js"]
