@@ -1,5 +1,5 @@
 # Use lightweight base image with Pandoc installed
-FROM pandoc/core:latest
+FROM pandoc/core:3.3
 
 # Set working directory in the container
 WORKDIR /data
