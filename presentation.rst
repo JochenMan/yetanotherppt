@@ -22,8 +22,10 @@ This slide has a list:
 1. First numbered item
 2. Second numbered item
 
-.. image:: https://example.com/path/to/image.jpg
+.. image:: https://picsum.photos/600/400
    :alt: Sample Image
+
+(This uses a placeholder image from https://picsum.photos – replace it with your own.)
 
 Third Slide Title
 -----------------

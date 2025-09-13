@@ -20,7 +20,9 @@ This slide has a list:
 1. First numbered item
 2. Second numbered item
 
-![Sample Image](https://example.com/path/to/image.jpg)
+![Sample Image](https://picsum.photos/600/400)
+
+(This uses a placeholder image from https://picsum.photos – replace it with your own.)
 
 ---
 
