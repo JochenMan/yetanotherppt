@@ -1,53 +1,103 @@
-# Not Another PowerPoint Presentation
-OR
-# Yet Another PowerPoint Alternative
+# Yet Another PowerPoint
 
-This guide walks you through setting up and using a custom Pandoc converter to transform ReStructuredText (`.rst`) documents into interactive HTML presentations using Reveal.js, viewable directly in your web browser.
+Transform Markdown (`.md`) or ReStructuredText (`.rst`) documents into beautiful interactive HTML presentations using Pandoc + Reveal.js. Since the built-in `?print-pdf` functionality of Reveal.js proved unreliable, PDF export is handled by Puppeteer, which uses Chromium to render `presentation.html` and capture each slide as a screenshot. **Pure Docker approach** – works from any directory with zero file system clutter!
 
-## Setup and Preparation
+## Quick Install
 
-### Building the Pandoc Converter Docker Image
+**Requirements:** Docker
 
-To convert `.rst` files into HTML presentations, we first need to build the Docker image for the Pandoc converter. Navigate to the `pandoc-converter` directory and run the Docker build command:
-
+**One command install:**
 ```bash
-cd pandoc-converter
-docker build -t pandoc-converter .
-cd ..
+curl -fsSL https://raw.githubusercontent.com/jochenman/yetanotherppt/main/install.sh | bash
 ```
 
-This command builds a Docker image named pandoc-converter based on the Dockerfile located in the pandoc-converter directory.
-
-# Creating and Viewing Your Presentation
-## Running the Web Server
-
-Start an Nginx web server to serve your HTML presentation files. This server will host the converted presentation and make it accessible through your browser:
+Or clone and install manually:
 ```bash
-docker run --rm -v "$(pwd):/usr/share/nginx/html:ro" -p 8080:80 -d --name presentation-nginx nginx
+git clone --recursive https://github.com/jochenman/yetanotherppt.git
+cd yetanotherppt
+./install.sh
 ```
 
-This command mounts the current directory to the Nginx web root as a read-only volume and forwards port 8080 on your local machine to port 80 on the container, and ensures the container is removed upon stopping.
+## Usage
 
-## Converting `.rst` Files to an HTML Presentation
-
-Use the pandoc-converter Docker container to convert your .rst document into an HTML presentation powered by Reveal.js:
+After installation, use `present` from any directory:
 
 ```bash
-docker run --rm -v "$(pwd):/data" pandoc-converter -s -t revealjs -o /data/presentation.html /data/presentation.rst -V revealjs-url=./reveal.js
+# Auto-detect presentation.md/rst or slides.md/rst
+present
 
-# Or to use a different theme
-docker run --rm -v "$(pwd):/data" pandoc-converter -s -t revealjs -o /data/presentation.html /data/presentation.rst -V revealjs-url=./reveal.js -V theme=solarized
+# Convert specific file
+present myfile.md
 
-# Or to use a custom-style.css file for setting the background image:
-docker run --rm -v "$(pwd):/data" pandoc-converter -s -t revealjs -o /data/presentation.html /data/presentation.rst -V revealjs-url=./reveal.js -V theme=white --css custom-style.css
+# With custom theme
+present --theme solarized
+
+# Full options
+present myfile.rst --theme black --port 9000
 ```
 
-This command takes presentation.rst from your current directory, converts it to presentation.html using the Reveal.js format, and outputs the file back to your current directory.
+**Available themes:** `white`, `black`, `league`, `beige`, `sky`, `night`, `serif`, `simple`, `solarized`, `blood`, `moon`
 
-## Viewing the Presentation
+## File Structure
 
-Open your preferred web browser and navigate to http://localhost:8080/presentation.html. You should now see your presentation rendered as an interactive slide show. Navigate through the slides using the arrow keys on your keyboard.
+Your presentation directory stays **completely clean**:
+```
+my-presentation/
+├── presentation.md     # Your slides (or .rst)
+└── images/            # Any images you reference
+```
 
-## PDF version
+*After running `present`:*
+```
+my-presentation/
+├── presentation.md     # Your original file
+├── presentation.html   # Generated presentation
+└── images/            # Your images (copied to presentation)
+```
 
-To obtain the pdf version of it, visit http://localhost:8080/presentation.html?print-pdf, then press `CTRL` + `p` and select "Save as PDF".
+**No reveal.js, no CSS files, no clutter!** Everything stays inside the Docker container.
+
+## Quick Start Example
+
+1. **Create a new presentation:**
+   ```bash
+   mkdir my-talk && cd my-talk
+   echo "# My Presentation
+
+   ## Slide 1
+   Hello world!
+
+   ## Slide 2
+   This is easy!" > presentation.md
+   ```
+
+2. **Generate and serve:**
+   ```bash
+   present
+   ```
+
+3. **View:** http://localhost:8080/presentation.html
+
+4. **Stop:** `docker stop yetanotherppt-presenter`
+
+## Uninstall
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jochenman/yetanotherppt/main/uninstall.sh | bash
+```
+
+## Manual Docker Usage
+
+If you prefer direct Docker commands:
+
+```bash
+# Build the image
+docker build -t yetanotherppt/presenter .
+
+# Run from any directory containing presentation.md
+docker run --rm -d -v "$(pwd):/presentations:ro" -p 8080:80 yetanotherppt/presenter
+
+# With options
+docker run --rm -d -v "$(pwd):/presentations:ro" -p 9000:80 \
+  yetanotherppt/presenter --file slides.md --theme black
+```
