@@ -30,6 +30,23 @@ inotifywait -m -e modify "$SOURCE_FILE" --format '%w%f %e' | while read file eve
 
     if [ $? -eq 0 ]; then
         echo "File watcher: Presentation updated successfully!"
+
+        # Regenerate PDF as well
+        echo "File watcher: Regenerating PDF..."
+
+        # Get the presentation folder name
+        PRESENTATION_FOLDER=$(cat /usr/share/nginx/html/current-presentation-folder 2>/dev/null || echo "")
+
+        cd /app && node pdf-generator.js \
+            "http://localhost/$PRESENTATION_FOLDER/presentation.html" \
+            "$FOLDER_PATH/presentation.pdf" \
+            > /dev/null 2>&1
+
+        if [ $? -eq 0 ]; then
+            echo "File watcher: PDF updated successfully!"
+        else
+            echo "File watcher: Error updating PDF"
+        fi
     else
         echo "File watcher: Error updating presentation"
     fi
