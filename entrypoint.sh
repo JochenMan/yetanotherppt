@@ -102,6 +102,10 @@ echo "Starting web server..."
 nginx -g "daemon off;" &
 NGINX_PID=$!
 
+# Start file watcher for auto-regeneration
+echo "Starting file watcher for auto-regeneration..."
+nohup /file-watcher.sh "$INPUT_FILE" "$THEME" "$PRESENTATIONS_DIR" "$FOLDER_PATH" > /dev/null 2>&1 &
+
 # Start the background PDF generation, which will wait for the server
 echo "Starting background PDF generation..."
 nohup /generate-pdf-in-background.sh &
@@ -111,6 +115,7 @@ echo "$PRESENTATION_FOLDER" > "$WEB_ROOT/current-presentation-folder"
 
 echo "Presentation ready at: http://localhost:$PORT/$PRESENTATION_FOLDER/presentation.html"
 echo "PDF will be available shortly at: http://localhost:$PORT/$PRESENTATION_FOLDER/presentation.pdf"
+echo "File watcher active - presentation will auto-regenerate when $INPUT_FILE changes!"
 
 # Wait for nginx to exit. This keeps the container alive.
 wait $NGINX_PID
