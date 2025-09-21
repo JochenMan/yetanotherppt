@@ -44,15 +44,44 @@ CURRENT_DIR="\$(pwd)"
 
 # Parse arguments
 INPUT_FILE=""
-THEME="white"
+THEME="black"
 PORT="8080"
 
 # Generate timestamp for unique folder
 TIMESTAMP=\$(date +%s)
 PRESENTATION_FOLDER="p-\$TIMESTAMP"
 
+show_help() {
+    echo "Yet Another PPT - Transform Markdown/RST to Beautiful Presentations"
+    echo ""
+    echo "Usage: present <file> [options]"
+    echo ""
+    echo "Arguments:"
+    echo "  <file>           Markdown (.md) or ReStructuredText (.rst) file"
+    echo ""
+    echo "Options:"
+    echo "  --theme THEME    Presentation theme (default: black)"
+    echo "  --port PORT      Server port (default: 8080)"
+    echo "  --uninstall      Remove yetanotherppt from system"
+    echo "  -h, --help       Show this help message"
+    echo ""
+    echo "Available themes:"
+    echo "  white, black, league, beige, sky, night, serif, simple, solarized, blood, moon"
+    echo ""
+    echo "Examples:"
+    echo "  present slides.md"
+    echo "  present presentation.rst --theme black --port 9000"
+    echo ""
+    echo "Live editing: Edit your source file while present is running - changes"
+    echo "appear automatically when you refresh your browser."
+}
+
 while [ \$# -gt 0 ]; do
     case \$1 in
+        -h|--help)
+            show_help
+            exit 0
+            ;;
         --theme)
             THEME="\$2"
             shift 2
@@ -60,6 +89,17 @@ while [ \$# -gt 0 ]; do
         --port)
             PORT="\$2"
             shift 2
+            ;;
+        --uninstall)
+            echo "Uninstalling yetanotherppt..."
+            # Stop any running containers
+            docker stop yetanotherppt-presenter 2>/dev/null || true
+            # Remove Docker image
+            docker rmi yetanotherppt/presenter 2>/dev/null || true
+            # Remove this script
+            rm "\$0"
+            echo "yetanotherppt uninstalled successfully!"
+            exit 0
             ;;
         *)
             if [ -z "\$INPUT_FILE" ]; then
@@ -75,10 +115,9 @@ docker stop yetanotherppt-presenter 2>/dev/null || true
 
 echo "Starting yetanotherppt presenter..."
 
-# Require input file to be specified
+# Show help if no input file specified
 if [ -z "\$INPUT_FILE" ]; then
-    echo "Error: No input file specified"
-    echo "Usage: present myfile.md [options]"
+    show_help
     exit 1
 fi
 
@@ -96,8 +135,6 @@ sleep 2
 
 echo "Presentation ready at: http://localhost:\$PORT/\$PRESENTATION_FOLDER/presentation.html"
 echo "PDF version at: http://localhost:\$PORT/\$PRESENTATION_FOLDER/presentation.pdf"
-echo ""
-echo "Stop with: docker stop yetanotherppt-presenter"
 EOF
 
 chmod +x "$BIN_DIR/present"
@@ -115,9 +152,6 @@ echo ""
 echo "yetanotherppt installed successfully!"
 echo ""
 echo "Usage:"
-echo "   present                    # Auto-detect presentation file"
-echo "   present myfile.md          # Convert specific file"
-echo "   present --theme black      # With custom theme"
-echo "   present myfile.md --theme solarized --port 9000  # Full options"
+echo "   present myfile.md # Or present myfile.rst"
+echo "   present myfile.md --theme black --port 8080  # Default options"
 echo ""
-echo "Uninstall with: ~/.local/bin/present --uninstall"

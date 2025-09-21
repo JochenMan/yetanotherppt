@@ -1,6 +1,6 @@
 # Yet Another PowerPoint
 
-Transform Markdown (`.md`) or ReStructuredText (`.rst`) documents into beautiful interactive HTML presentations using Pandoc + Reveal.js. Since the built-in `?print-pdf` functionality of Reveal.js proved unreliable, PDF export is handled by Puppeteer, which uses Chromium to render `presentation.html` and capture each slide as a screenshot. **Pure Docker approach** – works from any directory with zero file system clutter!
+Transform Markdown (.md) or ReStructuredText (.rst) documents into HTML presentations with Pandoc and Reveal.js. PDF export is handled by Puppeteer with Chromium, and both outputs are served locally. When you edit the source file, the HTML and PDF are automatically rebuilt.
 
 ## Quick Install
 
@@ -11,26 +11,50 @@ Transform Markdown (`.md`) or ReStructuredText (`.rst`) documents into beautiful
 curl -fsSL https://raw.githubusercontent.com/jochenman/yetanotherppt/main/install.sh | bash
 ```
 
-Or clone and install manually:
-```bash
-git clone --recursive https://github.com/jochenman/yetanotherppt.git
-cd yetanotherppt
-./install.sh
-```
+This clones the repo into a temporary directory, builds the yappt container, and creates ~/.local/bin/present. The script starts the container, renders and serves your presentation, and automatically rebuilds on file changes.
 
 ## Usage
 
 Create a simple presentation:
 
+````bash
+cat > slides.md <<'EOF'
+% Presentation Title
+% Your Name
+% Today's Date
+
+# First Slide Title
+
+- If you change the presentation file
+- refresh the browser to see the changes in both
+  - the html
+  - and the pdf!
+
+**Bold text** and *italic text* for emphasis.
+
+---
+
+# Second Slide Title
+
+![Sample Image](https://picsum.photos/600/400)
+
+(This uses a placeholder image from https://picsum.photos – replace it with your own.)
+
+---
+
+# Third Slide Title
+
+Here's a block of code:
+
+```python
+def hello_world():
+    print("Hello, world!")
+```
+EOF
+````
+
+Render and host the .html to present/download the .pdf
 ```bash
-echo "# My Presentation
-
-## First Slide
-Hello world!
-
-## Second Slide
-Edit this file and see changes instantly." > slides.md
-
 present slides.md
 ```
 
@@ -38,8 +62,7 @@ present slides.md
 
 **Options:**
 ```bash
-present slides.md --theme black --port 9000
-present slides.rst --theme night --port 8000
+present slides.md --theme black --port 8080 # Default options
 ```
 
 Supports both Markdown (.md) and ReStructuredText (.rst) files.
@@ -49,21 +72,18 @@ Supports both Markdown (.md) and ReStructuredText (.rst) files.
 ## Uninstall
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jochenman/yetanotherppt/main/uninstall.sh | bash
+present --uninstall
 ```
 
-## Manual Docker Usage
+## Customize and Build Your Own
 
-If you prefer direct Docker commands:
+To modify the background image or CSS styling:
 
 ```bash
-# Build the image
-docker build -t yetanotherppt/presenter .
+git clone --recursive https://github.com/jochenman/yetanotherppt.git
+cd yetanotherppt
 
-# Run from any directory containing presentation.md
-docker run --rm -d -v "$(pwd):/presentations:ro" -p 8080:80 yetanotherppt/presenter
-
-# With options
-docker run --rm -d -v "$(pwd):/presentations:ro" -p 9000:80 \
-  yetanotherppt/presenter --file slides.md --theme black
+# Edit custom-style.css or replace background.jpg with your own
+# Then (re-)build and install your customized version
+./uninstall.sh && ./install.sh
 ```

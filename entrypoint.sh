@@ -9,7 +9,7 @@ WEB_ROOT="/usr/share/nginx/html"
 
 # Default values
 INPUT_FILE=""
-THEME="white"
+THEME="black"
 PORT="80"
 PRESENTATION_FOLDER=""
 
