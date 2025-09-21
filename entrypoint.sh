@@ -42,22 +42,11 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-# Auto-detect input file if not specified
+# Require input file to be specified
 if [ -z "$INPUT_FILE" ]; then
-    if [ -f "$PRESENTATIONS_DIR/presentation.md" ]; then
-        INPUT_FILE="presentation.md"
-    elif [ -f "$PRESENTATIONS_DIR/presentation.rst" ]; then
-        INPUT_FILE="presentation.rst"
-    elif [ -f "$PRESENTATIONS_DIR/slides.md" ]; then
-        INPUT_FILE="slides.md"
-    elif [ -f "$PRESENTATIONS_DIR/slides.rst" ]; then
-        INPUT_FILE="slides.rst"
-    else
-        echo "No presentation file found in mounted directory"
-        echo "Expected: presentation.md, presentation.rst, slides.md, or slides.rst"
-        echo "Or specify: --file myfile.md"
-        exit 1
-    fi
+    echo "Error: No input file specified"
+    echo "Usage: --file myfile.md"
+    exit 1
 fi
 
 # Validate input file exists

@@ -75,24 +75,21 @@ docker stop yetanotherppt-presenter 2>/dev/null || true
 
 echo "Starting yetanotherppt presenter..."
 
-# Run the all-in-one container
-if [ -n "\$INPUT_FILE" ]; then
-    docker run --rm -d \\
-        --name yetanotherppt-presenter \\
-        -v "\$CURRENT_DIR:/usr/share/nginx/html/presentations:ro" \\
-        -p "\$PORT:80" \\
-        "\$IMAGE_NAME" \\
-        --file "\$INPUT_FILE" --theme "\$THEME" --folder "\$PRESENTATION_FOLDER" \\
-        --css custom-style.css
-else
-    docker run --rm -d \\
-        --name yetanotherppt-presenter \\
-        -v "\$CURRENT_DIR:/usr/share/nginx/html/presentations:ro" \\
-        -p "\$PORT:80" \\
-        "\$IMAGE_NAME" \\
-        --theme "\$THEME" --folder "\$PRESENTATION_FOLDER" \\
-        --css custom-style.css
+# Require input file to be specified
+if [ -z "\$INPUT_FILE" ]; then
+    echo "Error: No input file specified"
+    echo "Usage: present myfile.md [options]"
+    exit 1
 fi
+
+# Run the all-in-one container
+docker run --rm -d \\
+    --name yetanotherppt-presenter \\
+    -v "\$CURRENT_DIR:/usr/share/nginx/html/presentations:ro" \\
+    -p "\$PORT:80" \\
+    "\$IMAGE_NAME" \\
+    --file "\$INPUT_FILE" --theme "\$THEME" --folder "\$PRESENTATION_FOLDER" \\
+    --css custom-style.css
 
 # Wait a moment for container to start
 sleep 2

@@ -20,65 +20,31 @@ cd yetanotherppt
 
 ## Usage
 
-After installation, use `present` from any directory:
+Create a simple presentation:
 
 ```bash
-# Auto-detect presentation.md/rst or slides.md/rst
-present
+echo "# My Presentation
 
-# Convert specific file
-present myfile.md
+## First Slide
+Hello world!
 
-# With custom theme
-present --theme solarized
+## Second Slide
+Edit this file and see changes instantly." > slides.md
 
-# Full options
-present myfile.rst --theme black --port 9000
+present slides.md
 ```
+
+**Live editing:** Edit `slides.md` while `present` is running - changes appear when you refresh your browser.
+
+**Options:**
+```bash
+present slides.md --theme black --port 9000
+present slides.rst --theme night --port 8000
+```
+
+Supports both Markdown (.md) and ReStructuredText (.rst) files.
 
 **Available themes:** `white`, `black`, `league`, `beige`, `sky`, `night`, `serif`, `simple`, `solarized`, `blood`, `moon`
-
-## File Structure
-
-Your presentation directory stays **completely clean**:
-```
-my-presentation/
-├── presentation.md     # Your slides (or .rst)
-└── images/            # Any images you reference
-```
-
-*After running `present`:*
-```
-my-presentation/
-├── presentation.md     # Your original file
-├── presentation.html   # Generated presentation
-└── images/            # Your images (copied to presentation)
-```
-
-**No reveal.js, no CSS files, no clutter!** Everything stays inside the Docker container.
-
-## Quick Start Example
-
-1. **Create a new presentation:**
-   ```bash
-   mkdir my-talk && cd my-talk
-   echo "# My Presentation
-
-   ## Slide 1
-   Hello world!
-
-   ## Slide 2
-   This is easy!" > presentation.md
-   ```
-
-2. **Generate and serve:**
-   ```bash
-   present
-   ```
-
-3. **View:** http://localhost:8080/presentation.html
-
-4. **Stop:** `docker stop yetanotherppt-presenter`
 
 ## Uninstall
 
