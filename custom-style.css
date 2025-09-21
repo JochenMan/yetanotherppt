@@ -43,7 +43,7 @@
 /* Additional custom styles (if needed) */
 
 .reveal {
-    background-image: url('Flag_of_Kyrgyzstan_(1992–2023).svg.png');
+    background-image: url('background.png');
     background-size: cover; /* Cover the entire slide */
     background-position: center center; /* Center the background image */
     background-repeat: no-repeat;

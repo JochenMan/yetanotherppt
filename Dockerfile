@@ -10,7 +10,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 # Copy reveal.js and styling assets into nginx web root
 COPY reveal.js /usr/share/nginx/html/reveal.js
 COPY custom-style.css /usr/share/nginx/html/custom-style.css
-COPY Flag_of_Kyrgyzstan_*.png /usr/share/nginx/html/
+COPY background.png /usr/share/nginx/html/
 
 # Create app directory and install Puppeteer
 WORKDIR /app
