@@ -43,7 +43,7 @@
 /* Additional custom styles (if needed) */
 
 .reveal {
-    background-image: url('background.png');
+    background-image: url('background.jpg');
     background-size: cover; /* Cover the entire slide */
     background-position: center center; /* Center the background image */
     background-repeat: no-repeat;
