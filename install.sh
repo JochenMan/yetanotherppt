@@ -78,14 +78,16 @@ if [ -n "\$INPUT_FILE" ]; then
         -v "\$CURRENT_DIR:/usr/share/nginx/html/presentations:ro" \\
         -p "\$PORT:80" \\
         "\$IMAGE_NAME" \\
-        --file "\$INPUT_FILE" --theme "\$THEME"
+        --file "\$INPUT_FILE" --theme "\$THEME" \\
+        --css custom-style.css
 else
     docker run --rm -d \\
         --name yetanotherppt-presenter \\
         -v "\$CURRENT_DIR:/usr/share/nginx/html/presentations:ro" \\
         -p "\$PORT:80" \\
         "\$IMAGE_NAME" \\
-        --theme "\$THEME"
+        --theme "\$THEME" \\
+        --css custom-style.css
 fi
 
 # Wait a moment for container to start
