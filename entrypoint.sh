@@ -11,6 +11,7 @@ WEB_ROOT="/usr/share/nginx/html"
 INPUT_FILE=""
 THEME="white"
 PORT="80"
+PRESENTATION_FOLDER=""
 
 # Parse arguments
 while [ $# -gt 0 ]; do
@@ -25,6 +26,10 @@ while [ $# -gt 0 ]; do
             ;;
         --port)
             PORT="$2"
+            shift 2
+            ;;
+        --folder)
+            PRESENTATION_FOLDER="$2"
             shift 2
             ;;
         *)
@@ -61,11 +66,20 @@ if [ ! -f "$PRESENTATIONS_DIR/$INPUT_FILE" ]; then
     exit 1
 fi
 
-echo "Converting $INPUT_FILE with theme $THEME..."
+# Create timestamped folder and copy assets
+FOLDER_PATH="$WEB_ROOT/$PRESENTATION_FOLDER"
+mkdir -p "$FOLDER_PATH"
+
+# Copy reveal.js, CSS, and background to the timestamped folder
+cp -r "$WEB_ROOT/reveal.js" "$FOLDER_PATH/"
+cp "$WEB_ROOT/custom-style.css" "$FOLDER_PATH/"
+cp "$WEB_ROOT/background.jpg" "$FOLDER_PATH/"
+
+echo "Converting $INPUT_FILE with theme $THEME in folder $PRESENTATION_FOLDER..."
 
 echo "Running command:"
 echo pandoc -s -t revealjs \
-    -o "$WEB_ROOT/presentation.html" \
+    -o "$FOLDER_PATH/presentation.html" \
     "$PRESENTATIONS_DIR/$INPUT_FILE" \
     -V revealjs-url=./reveal.js \
     -V theme="$THEME" \
@@ -73,7 +87,7 @@ echo pandoc -s -t revealjs \
 
 # Convert presentation
 pandoc -s -t revealjs \
-    -o "$WEB_ROOT/presentation.html" \
+    -o "$FOLDER_PATH/presentation.html" \
     "$PRESENTATIONS_DIR/$INPUT_FILE" \
     -V revealjs-url=./reveal.js \
     -V theme="$THEME" \
@@ -92,8 +106,11 @@ NGINX_PID=$!
 echo "Starting background PDF generation..."
 nohup /generate-pdf-in-background.sh &
 
-echo "Presentation ready at: http://localhost:$PORT/presentation.html"
-echo "PDF will be available shortly at: http://localhost:$PORT/presentation.pdf"
+# Store the folder name for PDF generation
+echo "$PRESENTATION_FOLDER" > "$WEB_ROOT/current-presentation-folder"
+
+echo "Presentation ready at: http://localhost:$PORT/$PRESENTATION_FOLDER/presentation.html"
+echo "PDF will be available shortly at: http://localhost:$PORT/$PRESENTATION_FOLDER/presentation.pdf"
 
 # Wait for nginx to exit. This keeps the container alive.
 wait $NGINX_PID

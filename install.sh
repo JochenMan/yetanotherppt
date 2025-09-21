@@ -47,6 +47,10 @@ INPUT_FILE=""
 THEME="white"
 PORT="8080"
 
+# Generate timestamp for unique folder
+TIMESTAMP=\$(date +%s)
+PRESENTATION_FOLDER="p-\$TIMESTAMP"
+
 while [ \$# -gt 0 ]; do
     case \$1 in
         --theme)
@@ -78,7 +82,7 @@ if [ -n "\$INPUT_FILE" ]; then
         -v "\$CURRENT_DIR:/usr/share/nginx/html/presentations:ro" \\
         -p "\$PORT:80" \\
         "\$IMAGE_NAME" \\
-        --file "\$INPUT_FILE" --theme "\$THEME" \\
+        --file "\$INPUT_FILE" --theme "\$THEME" --folder "\$PRESENTATION_FOLDER" \\
         --css custom-style.css
 else
     docker run --rm -d \\
@@ -86,15 +90,15 @@ else
         -v "\$CURRENT_DIR:/usr/share/nginx/html/presentations:ro" \\
         -p "\$PORT:80" \\
         "\$IMAGE_NAME" \\
-        --theme "\$THEME" \\
+        --theme "\$THEME" --folder "\$PRESENTATION_FOLDER" \\
         --css custom-style.css
 fi
 
 # Wait a moment for container to start
 sleep 2
 
-echo "Presentation ready at: http://localhost:\$PORT/presentation.html"
-echo "PDF version at: http://localhost:\$PORT/presentation.pdf"
+echo "Presentation ready at: http://localhost:\$PORT/\$PRESENTATION_FOLDER/presentation.html"
+echo "PDF version at: http://localhost:\$PORT/\$PRESENTATION_FOLDER/presentation.pdf"
 echo ""
 echo "Stop with: docker stop yetanotherppt-presenter"
 EOF
