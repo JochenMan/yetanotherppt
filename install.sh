@@ -40,7 +40,6 @@ cat > "$BIN_DIR/present" << EOF
 # yetanotherppt pure Docker wrapper
 
 IMAGE_NAME="$IMAGE_NAME"
-CURRENT_DIR="\$(pwd)"
 
 # Parse arguments
 INPUT_FILE=""
@@ -103,7 +102,11 @@ while [ \$# -gt 0 ]; do
             ;;
         *)
             if [ -z "\$INPUT_FILE" ]; then
-                INPUT_FILE="\$1"
+                if [[ "\$1" == /* ]]; then
+                    INPUT_FILE="\$1"
+                else
+                    INPUT_FILE="\$(pwd)/\$1"
+                fi
             fi
             shift
             ;;
@@ -121,13 +124,17 @@ if [ -z "\$INPUT_FILE" ]; then
     exit 1
 fi
 
+# Get the directory and filename of the input file
+INPUT_DIR="\$(dirname "\$INPUT_FILE")"
+INPUT_FILENAME="\$(basename "\$INPUT_FILE")"
+
 # Run the all-in-one container
 docker run --rm -d \\
     --name yetanotherppt-presenter \\
-    -v "\$CURRENT_DIR:/usr/share/nginx/html/presentations:ro" \\
+    -v "\$INPUT_DIR:/usr/share/nginx/html/presentations:ro" \\
     -p "\$PORT:80" \\
     "\$IMAGE_NAME" \\
-    --file "\$INPUT_FILE" --theme "\$THEME" --folder "\$PRESENTATION_FOLDER" \\
+    --file "\$INPUT_FILENAME" --theme "\$THEME" --folder "\$PRESENTATION_FOLDER" \\
     --css custom-style.css
 
 # Wait a moment for container to start
