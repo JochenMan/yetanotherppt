@@ -5,7 +5,7 @@
 INPUT_FILE="$1"
 THEME="$2"
 PRESENTATIONS_DIR="$3"
-FOLDER_PATH="$4"
+OUTPUT_DIR_PATH="$4"
 
 SOURCE_FILE="$PRESENTATIONS_DIR/$INPUT_FILE"
 
@@ -28,7 +28,7 @@ inotifywait -m -e CLOSE_WRITE,MODIFY,ATTRIB,MOVED_TO,CREATE \
 
     # Re-run pandoc to update the presentation
     pandoc -s -t revealjs \
-        -o "$FOLDER_PATH/presentation.html" \
+        -o "$OUTPUT_DIR_PATH/presentation.html" \
         "$SOURCE_FILE" \
         -V revealjs-url=./reveal.js \
         -V theme="$THEME" \
@@ -41,11 +41,11 @@ inotifywait -m -e CLOSE_WRITE,MODIFY,ATTRIB,MOVED_TO,CREATE \
         echo "File watcher: Regenerating PDF..."
 
         # Get the presentation folder name
-        PRESENTATION_FOLDER=$(cat /usr/share/nginx/html/current-presentation-folder 2>/dev/null || echo "")
+        PRESENTATION_DIR_NAME=$(cat /usr/share/nginx/html/current-presentation-dir 2>/dev/null || echo "")
 
         cd /app && node pdf-generator.js \
-            "http://localhost/$PRESENTATION_FOLDER/presentation.html" \
-            "$FOLDER_PATH/presentation.pdf" \
+            "http://localhost/$PRESENTATION_DIR_NAME/presentation.html" \
+            "$OUTPUT_DIR_PATH/presentation.pdf" \
             > /dev/null 2>&1
 
         if [ $? -eq 0 ]; then

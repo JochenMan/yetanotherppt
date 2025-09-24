@@ -3,14 +3,14 @@
 LOG_FILE="/usr/share/nginx/html/pdf-generation.log"
 
 # Get the current presentation folder
-PRESENTATION_FOLDER=$(cat /usr/share/nginx/html/current-presentation-folder 2>/dev/null || echo "")
-if [ -z "$PRESENTATION_FOLDER" ]; then
+PRESENTATION_DIR_NAME=$(cat /usr/share/nginx/html/current-presentation-dir 2>/dev/null || echo "")
+if [ -z "$PRESENTATION_DIR_NAME" ]; then
   echo "Error: No presentation folder found. PDF generation aborted." > "$LOG_FILE"
   exit 1
 fi
 
-PRESENTATION_URL="http://localhost/$PRESENTATION_FOLDER/presentation.html"
-PDF_OUTPUT="/usr/share/nginx/html/$PRESENTATION_FOLDER/presentation.pdf"
+PRESENTATION_URL="http://localhost/$PRESENTATION_DIR_NAME/presentation.html"
+PDF_OUTPUT="/usr/share/nginx/html/$PRESENTATION_DIR_NAME/presentation.pdf"
 
 echo "Waiting for web server to be ready..."
 for i in $(seq 1 60); do

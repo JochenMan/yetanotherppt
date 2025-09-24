@@ -11,7 +11,7 @@ WEB_ROOT="/usr/share/nginx/html"
 INPUT_FILE=""
 THEME="black"
 PORT="80"
-PRESENTATION_FOLDER=""
+PRESENTATION_DIR_NAME=""
 
 # Parse arguments
 while [ $# -gt 0 ]; do
@@ -29,7 +29,7 @@ while [ $# -gt 0 ]; do
             shift 2
             ;;
         --folder)
-            PRESENTATION_FOLDER="$2"
+            PRESENTATION_DIR_NAME="$2"
             shift 2
             ;;
         *)
@@ -56,19 +56,20 @@ if [ ! -f "$PRESENTATIONS_DIR/$INPUT_FILE" ]; then
 fi
 
 # Create timestamped folder and copy assets
-FOLDER_PATH="$WEB_ROOT/$PRESENTATION_FOLDER"
-mkdir -p "$FOLDER_PATH"
+OUTPUT_DIR_PATH="$WEB_ROOT/$PRESENTATION_DIR_NAME"
+
+mkdir -p "$OUTPUT_DIR_PATH"
 
 # Copy reveal.js, CSS, and background to the timestamped folder
-cp -r "$WEB_ROOT/reveal.js" "$FOLDER_PATH/"
-cp "$WEB_ROOT/custom-style.css" "$FOLDER_PATH/"
-cp "$WEB_ROOT/background.jpg" "$FOLDER_PATH/"
+cp -r "$WEB_ROOT/reveal.js" "$OUTPUT_DIR_PATH/"
+cp "$WEB_ROOT/custom-style.css" "$OUTPUT_DIR_PATH/"
+cp "$WEB_ROOT/background.jpg" "$OUTPUT_DIR_PATH/"
 
-echo "Converting $INPUT_FILE with theme $THEME in folder $PRESENTATION_FOLDER..."
+echo "Converting $INPUT_FILE with theme $THEME in folder $PRESENTATION_DIR_NAME..."
 
 echo "Running command:"
 echo pandoc -s -t revealjs \
-    -o "$FOLDER_PATH/presentation.html" \
+    -o "$OUTPUT_DIR_PATH/presentation.html" \
     "$PRESENTATIONS_DIR/$INPUT_FILE" \
     -V revealjs-url=./reveal.js \
     -V theme="$THEME" \
@@ -76,7 +77,7 @@ echo pandoc -s -t revealjs \
 
 # Convert presentation
 pandoc -s -t revealjs \
-    -o "$FOLDER_PATH/presentation.html" \
+    -o "$OUTPUT_DIR_PATH/presentation.html" \
     "$PRESENTATIONS_DIR/$INPUT_FILE" \
     -V revealjs-url=./reveal.js \
     -V theme="$THEME" \
@@ -93,17 +94,17 @@ NGINX_PID=$!
 
 # Start file watcher for auto-regeneration
 echo "Starting file watcher for auto-regeneration..."
-nohup /file-watcher.sh "$INPUT_FILE" "$THEME" "$PRESENTATIONS_DIR" "$FOLDER_PATH" > /dev/null 2>&1 &
+nohup /file-watcher.sh "$INPUT_FILE" "$THEME" "$PRESENTATIONS_DIR" "$OUTPUT_DIR_PATH" > /dev/null 2>&1 &
 
 # Start the background PDF generation, which will wait for the server
 echo "Starting background PDF generation..."
 nohup /generate-pdf-in-background.sh &
 
 # Store the folder name for PDF generation
-echo "$PRESENTATION_FOLDER" > "$WEB_ROOT/current-presentation-folder"
+echo "$PRESENTATION_DIR_NAME" > "$WEB_ROOT/current-presentation-dir"
 
-echo "Presentation ready at: http://localhost:$PORT/$PRESENTATION_FOLDER/presentation.html"
-echo "PDF will be available shortly at: http://localhost:$PORT/$PRESENTATION_FOLDER/presentation.pdf"
+echo "Presentation ready at: http://localhost:$PORT/$PRESENTATION_DIR_NAME/presentation.html"
+echo "PDF will be available shortly at: http://localhost:$PORT/$PRESENTATION_DIR_NAME/presentation.pdf"
 echo "File watcher active - presentation will auto-regenerate when $INPUT_FILE changes!"
 
 # Wait for nginx to exit. This keeps the container alive.
