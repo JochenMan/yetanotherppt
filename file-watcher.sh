@@ -14,11 +14,17 @@ if [ ! -f "$SOURCE_FILE" ]; then
     exit 1
 fi
 
+DIR="$(dirname "$SOURCE_FILE")"
+BASE="$(basename "$SOURCE_FILE")"
+
 echo "File watcher: Monitoring $SOURCE_FILE for changes..."
 
-# Watch for file modifications
-inotifywait -m -e modify "$SOURCE_FILE" --format '%w%f %e' | while read file event; do
-    echo "File watcher: Detected change in $file, regenerating presentation..."
+# Watch the directory and react only when our file changes.
+# Covers in-place writes, atomic saves, metadata-only changes, and new files moved into place.
+inotifywait -m -e CLOSE_WRITE,MODIFY,ATTRIB,MOVED_TO,CREATE \
+    --format '%w %e %f' "$DIR" | while read -r watch_dir event file; do
+    [ "$file" = "$BASE" ] || continue
+    echo "File watcher: Detected $event on $watch_dir$file, regenerating presentation..."
 
     # Re-run pandoc to update the presentation
     pandoc -s -t revealjs \
