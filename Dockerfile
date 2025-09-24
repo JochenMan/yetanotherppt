@@ -11,6 +11,8 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 COPY reveal.js /usr/share/nginx/html/reveal.js
 COPY custom-style.css /usr/share/nginx/html/custom-style.css
 COPY background.jpg /usr/share/nginx/html/
+COPY favicon.jpeg /usr/share/nginx/html/
+COPY header.html /usr/share/nginx/html/
 
 # Create app directory and install Puppeteer
 WORKDIR /app

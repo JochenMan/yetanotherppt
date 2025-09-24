@@ -32,7 +32,8 @@ inotifywait -m -e CLOSE_WRITE,MODIFY,ATTRIB,MOVED_TO,CREATE \
         "$SOURCE_FILE" \
         -V revealjs-url=./reveal.js \
         -V theme="$THEME" \
-        --css custom-style.css
+        --css custom-style.css \
+        --include-in-header /usr/share/nginx/html/header.html
 
     if [ $? -eq 0 ]; then
         echo "File watcher: Presentation updated successfully!"

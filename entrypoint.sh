@@ -73,7 +73,8 @@ echo pandoc -s -t revealjs \
     "$PRESENTATIONS_DIR/$INPUT_FILE" \
     -V revealjs-url=./reveal.js \
     -V theme="$THEME" \
-    --css custom-style.css
+    --css custom-style.css \
+    --include-in-header /usr/share/nginx/html/header.html
 
 # Convert presentation
 pandoc -s -t revealjs \
@@ -81,7 +82,8 @@ pandoc -s -t revealjs \
     "$PRESENTATIONS_DIR/$INPUT_FILE" \
     -V revealjs-url=./reveal.js \
     -V theme="$THEME" \
-    --css custom-style.css
+    --css custom-style.css \
+    --include-in-header /usr/share/nginx/html/header.html
 
 # No copying needed! User assets are directly accessible at /presentations/
 
