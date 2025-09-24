@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 # yetanotherppt installer - Pure Docker approach
@@ -36,7 +36,7 @@ fi
 
 # Create global command
 cat > "$BIN_DIR/present" << EOF
-#!/bin/bash
+#!/usr/bin/env bash
 # yetanotherppt pure Docker wrapper
 
 IMAGE_NAME="$IMAGE_NAME"
