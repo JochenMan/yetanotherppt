@@ -1,6 +1,6 @@
 # Yet Another PowerPoint
 
-Transform Markdown (.md) or ReStructuredText (.rst) documents into HTML presentations with Pandoc and Reveal.js. PDF export is handled by Puppeteer with Chromium, and both outputs are served locally. When you edit the source file, the HTML and PDF are automatically rebuilt.
+Transform Markdown (.md) or ReStructuredText (.rst) documents into HTML presentations with Pandoc and Reveal.js. PDF export is handled by Puppeteer with Chromium to create a pixel-perfect, static copy of the presentation, as the default Reveal.js PDF export (`?print-pdf`) can sometimes struggle with custom themes and backgrounds. Both outputs are served locally, and when you edit the source file, the HTML and PDF are automatically rebuilt.
 
 ## Quick Install
 

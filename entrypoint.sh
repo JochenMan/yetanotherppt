@@ -124,9 +124,5 @@ nohup /generate-pdf-in-background.sh &
 # Store the output-dir-name name for PDF generation
 echo "$OUTPUT_DIR_NAME" > "$WEB_ROOT/current-presentation-dir"
 
-echo "Presentation ready at: http://localhost:$PORT/$OUTPUT_DIR_NAME/presentation.html"
-echo "PDF will be available shortly at: http://localhost:$PORT/$OUTPUT_DIR_NAME/presentation.pdf"
-echo "File watcher active - presentation will auto-regenerate when $INPUT_FILE changes!"
-
 # Wait for nginx to exit. This keeps the container alive.
 wait $NGINX_PID
