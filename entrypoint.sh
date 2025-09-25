@@ -62,10 +62,10 @@ OUTPUT_DIR_PATH="$WEB_ROOT/$OUTPUT_DIR_NAME"
 
 mkdir -p "$OUTPUT_DIR_PATH"
 
-# Copy reveal.js, CSS, and background to the timestamped output-dir-name
-cp -r "$WEB_ROOT/reveal.js" "$OUTPUT_DIR_PATH/"
-cp "$WEB_ROOT/custom-style.css" "$OUTPUT_DIR_PATH/"
-cp "$WEB_ROOT/background.jpg" "$OUTPUT_DIR_PATH/"
+# Symlink reveal.js, CSS, and background to the timestamped output-dir-name
+ln -s "$WEB_ROOT/reveal.js" "$OUTPUT_DIR_PATH/reveal.js"
+ln -s "$WEB_ROOT/custom-style.css" "$OUTPUT_DIR_PATH/custom-style.css"
+ln -s "$WEB_ROOT/background.jpg" "$OUTPUT_DIR_PATH/background.jpg"
 
 echo "Converting $INPUT_FILE with theme $THEME in output-dir-name $OUTPUT_DIR_NAME..."
 
