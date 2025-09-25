@@ -2,22 +2,19 @@
 # File watcher for automatic presentation regeneration
 
 # Parameters passed from entrypoint.sh
-INPUT_FILE="$1"
+INPUT_FILE_PATH="$1"
 THEME="$2"
-PRESENTATIONS_DIR="$3"
-OUTPUT_DIR_PATH="$4"
+OUTPUT_DIR_PATH="$3"
 
-SOURCE_FILE="$PRESENTATIONS_DIR/$INPUT_FILE"
-
-if [ ! -f "$SOURCE_FILE" ]; then
-    echo "File watcher: Source file not found: $SOURCE_FILE"
+if [ ! -f "$INPUT_FILE_PATH" ]; then
+    echo "File watcher: Source file not found: $INPUT_FILE_PATH"
     exit 1
 fi
 
-DIR="$(dirname "$SOURCE_FILE")"
-BASE="$(basename "$SOURCE_FILE")"
+DIR="$(dirname "$INPUT_FILE_PATH")"
+BASE="$(basename "$INPUT_FILE_PATH")"
 
-echo "File watcher: Monitoring $SOURCE_FILE for changes..."
+echo "File watcher: Monitoring $INPUT_FILE_PATH for changes..."
 
 # Watch the directory and react only when our file changes.
 # Covers in-place writes, atomic saves, metadata-only changes, and new files moved into place.
@@ -29,7 +26,7 @@ inotifywait -m -e CLOSE_WRITE,MODIFY,ATTRIB,MOVED_TO,CREATE \
     # Re-run pandoc to update the presentation
     pandoc -s -t revealjs \
         -o "$OUTPUT_DIR_PATH/presentation.html" \
-        "$SOURCE_FILE" \
+        "$INPUT_FILE_PATH" \
         -V revealjs-url=./reveal.js \
         -V theme="$THEME" \
         --css custom-style.css \

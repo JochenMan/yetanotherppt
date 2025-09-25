@@ -11,7 +11,7 @@ WEB_ROOT="/usr/share/nginx/html"
 INPUT_FILE=""
 THEME="black"
 PORT="80"
-PRESENTATION_DIR_NAME=""
+OUTPUT_DIR_NAME=""
 
 # Parse arguments
 while [ $# -gt 0 ]; do
@@ -28,17 +28,17 @@ while [ $# -gt 0 ]; do
             PORT="$2"
             shift 2
             ;;
-        --folder)
-            PRESENTATION_DIR_NAME="$2"
+        --output-dir-name)
+            OUTPUT_DIR_NAME="$2"
             shift 2
             ;;
         *)
-            # Positional argument - treat as filename
-            if [ -z "$INPUT_FILE" ]; then
-                INPUT_FILE="$1"
-            fi
-            shift
-            ;;
+           # Positional argument - treat as filename
+           if [ -z "$INPUT_FILE" ]; then
+               INPUT_FILE="$1"
+           fi
+           shift
+           ;;
     esac
 done
 
@@ -49,28 +49,30 @@ if [ -z "$INPUT_FILE" ]; then
     exit 1
 fi
 
+INPUT_FILE_PATH="$PRESENTATIONS_DIR/$INPUT_FILE"
+
 # Validate input file exists
-if [ ! -f "$PRESENTATIONS_DIR/$INPUT_FILE" ]; then
-    echo "File not found: $INPUT_FILE"
+if [ ! -f "$INPUT_FILE_PATH" ]; then
+    echo "File not found: $INPUT_FILE_PATH"
     exit 1
 fi
 
-# Create timestamped folder and copy assets
-OUTPUT_DIR_PATH="$WEB_ROOT/$PRESENTATION_DIR_NAME"
+# Create timestamped output-dir-name and copy assets
+OUTPUT_DIR_PATH="$WEB_ROOT/$OUTPUT_DIR_NAME"
 
 mkdir -p "$OUTPUT_DIR_PATH"
 
-# Copy reveal.js, CSS, and background to the timestamped folder
+# Copy reveal.js, CSS, and background to the timestamped output-dir-name
 cp -r "$WEB_ROOT/reveal.js" "$OUTPUT_DIR_PATH/"
 cp "$WEB_ROOT/custom-style.css" "$OUTPUT_DIR_PATH/"
 cp "$WEB_ROOT/background.jpg" "$OUTPUT_DIR_PATH/"
 
-echo "Converting $INPUT_FILE with theme $THEME in folder $PRESENTATION_DIR_NAME..."
+echo "Converting $INPUT_FILE with theme $THEME in output-dir-name $OUTPUT_DIR_NAME..."
 
 echo "Running command:"
 echo pandoc -s -t revealjs \
     -o "$OUTPUT_DIR_PATH/presentation.html" \
-    "$PRESENTATIONS_DIR/$INPUT_FILE" \
+    "$INPUT_FILE_PATH" \
     -V revealjs-url=./reveal.js \
     -V theme="$THEME" \
     --css custom-style.css \
@@ -79,7 +81,7 @@ echo pandoc -s -t revealjs \
 # Convert presentation
 pandoc -s -t revealjs \
     -o "$OUTPUT_DIR_PATH/presentation.html" \
-    "$PRESENTATIONS_DIR/$INPUT_FILE" \
+    "$INPUT_FILE_PATH" \
     -V revealjs-url=./reveal.js \
     -V theme="$THEME" \
     --css custom-style.css \
@@ -96,17 +98,17 @@ NGINX_PID=$!
 
 # Start file watcher for auto-regeneration
 echo "Starting file watcher for auto-regeneration..."
-nohup /file-watcher.sh "$INPUT_FILE" "$THEME" "$PRESENTATIONS_DIR" "$OUTPUT_DIR_PATH" > /dev/null 2>&1 &
+nohup /file-watcher.sh "$INPUT_FILE_PATH" "$THEME" "$OUTPUT_DIR_PATH" > /dev/null 2>&1 &
 
 # Start the background PDF generation, which will wait for the server
 echo "Starting background PDF generation..."
 nohup /generate-pdf-in-background.sh &
 
-# Store the folder name for PDF generation
-echo "$PRESENTATION_DIR_NAME" > "$WEB_ROOT/current-presentation-dir"
+# Store the output-dir-name name for PDF generation
+echo "$OUTPUT_DIR_NAME" > "$WEB_ROOT/current-presentation-dir"
 
-echo "Presentation ready at: http://localhost:$PORT/$PRESENTATION_DIR_NAME/presentation.html"
-echo "PDF will be available shortly at: http://localhost:$PORT/$PRESENTATION_DIR_NAME/presentation.pdf"
+echo "Presentation ready at: http://localhost:$PORT/$OUTPUT_DIR_NAME/presentation.html"
+echo "PDF will be available shortly at: http://localhost:$PORT/$OUTPUT_DIR_NAME/presentation.pdf"
 echo "File watcher active - presentation will auto-regenerate when $INPUT_FILE changes!"
 
 # Wait for nginx to exit. This keeps the container alive.

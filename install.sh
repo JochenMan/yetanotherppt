@@ -46,9 +46,9 @@ INPUT_FILE=""
 THEME="black"
 PORT="8080"
 
-# Generate timestamp for unique folder
+# Generate timestamp for unique output-dir-name
 TIMESTAMP=\$(date +%s)
-PRESENTATION_FOLDER="p-\$TIMESTAMP"
+OUTPUT_DIR_NAME="p-\$TIMESTAMP"
 
 show_help() {
     echo "Yet Another PPT - Transform Markdown/RST to Beautiful Presentations"
@@ -134,14 +134,14 @@ docker run --rm -d \\
     -v "\$INPUT_DIR:/usr/share/nginx/html/presentations:ro" \\
     -p "\$PORT:80" \\
     "\$IMAGE_NAME" \\
-    --file "\$INPUT_FILENAME" --theme "\$THEME" --folder "\$PRESENTATION_FOLDER" \\
+    --file "\$INPUT_FILENAME" --theme "\$THEME" --output-dir-name "\$OUTPUT_DIR_NAME" \\
     --css custom-style.css
 
 # Wait a moment for container to start
 sleep 2
 
-echo "Presentation ready at: http://localhost:\$PORT/\$PRESENTATION_FOLDER/presentation.html"
-echo "PDF version at: http://localhost:\$PORT/\$PRESENTATION_FOLDER/presentation.pdf"
+echo "Presentation ready at: http://localhost:\$PORT/\$OUTPUT_DIR_NAME/presentation.html"
+echo "PDF version at: http://localhost:\$PORT/\$OUTPUT_DIR_NAME/presentation.pdf"
 EOF
 
 chmod +x "$BIN_DIR/present"
