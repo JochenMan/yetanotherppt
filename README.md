@@ -53,6 +53,12 @@ def hello_world():
 EOF
 ````
 
+**Customizing Your Presentation**
+
+You can easily override the default background and styling. Just place a `background.jpg` or `custom-style.css` file in the same directory as your `slides.md` file. These local versions will be used automatically.
+
+---
+
 Render and host the .html to present/download the .pdf
 ```bash
 present slides.md
