@@ -57,15 +57,32 @@ if [ ! -f "$INPUT_FILE_PATH" ]; then
     exit 1
 fi
 
-# Create timestamped output-dir-name and copy assets
+# Create timestamped output-dir-name and symlink assets with precedence
 OUTPUT_DIR_PATH="$WEB_ROOT/$OUTPUT_DIR_NAME"
+INPUT_DIR=$(dirname "$INPUT_FILE_PATH")
 
 mkdir -p "$OUTPUT_DIR_PATH"
 
-# Symlink reveal.js, CSS, and background to the timestamped output-dir-name
+# 1. Prioritize the core reveal.js framework
 ln -s "$WEB_ROOT/reveal.js" "$OUTPUT_DIR_PATH/reveal.js"
-ln -s "$WEB_ROOT/custom-style.css" "$OUTPUT_DIR_PATH/custom-style.css"
-ln -s "$WEB_ROOT/background.jpg" "$OUTPUT_DIR_PATH/background.jpg"
+
+# 2. Link all user assets from the source directory.
+# The -n flag prevents overwriting the reveal.js link we just made.
+# This allows user-supplied css and background to be linked.
+for item in "$INPUT_DIR"/*; do
+    # Check if item exists to handle empty directories
+    if [ -e "$item" ]; then
+        ln -s -n "$item" "$OUTPUT_DIR_PATH/"
+    fi
+done
+
+# 3. Link default assets as fallbacks if not provided by the user.
+if [ ! -e "$OUTPUT_DIR_PATH/custom-style.css" ]; then
+    ln -s "$WEB_ROOT/custom-style.css" "$OUTPUT_DIR_PATH/custom-style.css"
+fi
+if [ ! -e "$OUTPUT_DIR_PATH/background.jpg" ]; then
+    ln -s "$WEB_ROOT/background.jpg" "$OUTPUT_DIR_PATH/background.jpg"
+fi
 
 echo "Converting $INPUT_FILE with theme $THEME in output-dir-name $OUTPUT_DIR_NAME..."
 
