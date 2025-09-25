@@ -140,6 +140,8 @@ docker run --rm -d \\
 # Wait a moment for container to start
 sleep 2
 
+echo "Watching \$INPUT_FILE for changes!"
+echo
 echo "Presentation ready at: http://localhost:\$PORT/\$OUTPUT_DIR_NAME/presentation.html"
 echo "PDF version at: http://localhost:\$PORT/\$OUTPUT_DIR_NAME/presentation.pdf"
 EOF
