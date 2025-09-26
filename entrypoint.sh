@@ -67,12 +67,15 @@ mkdir -p "$OUTPUT_DIR_PATH"
 ln -s "$WEB_ROOT/reveal.js" "$OUTPUT_DIR_PATH/reveal.js"
 
 # 2. Link all user assets from the source directory.
-# The -n flag prevents overwriting the reveal.js link we just made.
-# This allows user-supplied css and background to be linked.
+# This allows for relative paths to images and other user assets.
 for item in "$INPUT_DIR"/*; do
-    # Check if item exists to handle empty directories
-    if [ -e "$item" ]; then
-        ln -s -n "$item" "$OUTPUT_DIR_PATH/"
+    item_name=$(basename "$item")
+    destination_path="$OUTPUT_DIR_PATH/$item_name"
+
+    # Only link if the source exists AND the destination does NOT already exist.
+    # This correctly skips files that are handled explicitly, like 'reveal.js'.
+    if [ -e "$item" ] && [ ! -e "$destination_path" ]; then
+        ln -s "$item" "$destination_path"
     fi
 done
 
