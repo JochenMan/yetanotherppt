@@ -72,9 +72,11 @@ for item in "$INPUT_DIR"/*; do
     item_name=$(basename "$item")
     destination_path="$OUTPUT_DIR_PATH/$item_name"
 
-    # Only link if the source exists AND the destination does NOT already exist.
-    # This correctly skips files that are handled explicitly, like 'reveal.js'.
-    if [ -e "$item" ] && [ ! -e "$destination_path" ]; then
+    # Only link if:
+    # - The source item exists.
+    # - The destination path does not already exist (to skip 'reveal.js').
+    # - The item is not the reserved output filename 'presentation.html'.
+    if [ -e "$item" ] && [ ! -e "$destination_path" ] && [ "$item_name" != "presentation.html" ]; then
         ln -s "$item" "$destination_path"
     fi
 done
